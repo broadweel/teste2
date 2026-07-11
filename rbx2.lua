@@ -136,7 +136,7 @@ containerTeleportes.BackgroundTransparency = 1
 containerTeleportes.BorderSizePixel = 0
 containerTeleportes.ScrollBarThickness = 5 
 containerTeleportes.ScrollingDirection = Enum.ScrollingDirection.Y
-containerTeleportes.CanvasSize = UDim2.new(0, 0, 0, 310) 
+containerTeleportes.CanvasSize = UDim2.new(0, 0, 0, 370) -- Tamanho aumentado para 370
 containerTeleportes.Visible = true
 containerTeleportes.Parent = framePrincipal
 
@@ -286,6 +286,14 @@ Instance.new("UICorner", txtTempoLoop).CornerRadius = UDim.new(0, 5)
 
 local btnModoLoop = criarBotao("BtnModoLoop", "Alvo: Salvo", UDim2.new(1, -120, 0, 262), Color3.fromRGB(52, 73, 94), containerTeleportes)
 btnModoLoop.Size = UDim2.new(0, 110, 0, 32)
+local linhaFlutuante = Instance.new("Frame")
+linhaFlutuante.Size = UDim2.new(1, -20, 0, 1)
+linhaFlutuante.Position = UDim2.new(0, 10, 0, 305)
+linhaFlutuante.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+linhaFlutuante.BorderSizePixel = 0
+linhaFlutuante.Parent = containerTeleportes
+
+local btnToggleFlutuante = criarBotao("BtnToggleFlutuante", "Widget Flutuante (Mobile): OFF", UDim2.new(0, 10, 0, 315), Color3.fromRGB(192, 57, 43), containerTeleportes)
 
 -- ==========================================
 -- BOTÃO FLUTUANTE (WIDGET MOBILE)
@@ -294,6 +302,7 @@ local menuFlutuanteContainer = Instance.new("Frame")
 menuFlutuanteContainer.Size = UDim2.new(0, 45, 0, 135)
 menuFlutuanteContainer.Position = UDim2.new(1, -60, 1, -180) 
 menuFlutuanteContainer.BackgroundTransparency = 1
+menuFlutuanteContainer.Visible = false -- Deixa o menu flutuante invisível por padrão
 menuFlutuanteContainer.Parent = screenGui
 
 local subBtnSalvar = Instance.new("TextButton")
@@ -442,6 +451,9 @@ local btnEspUnificado = criarBotao("BtnEspUnificado", "ESP Geral (Jogadores + Ar
 -- 4. Restante dos hacks do MM2 (removidos atirar no murderer, tp arma e matar todos)
 local btnTpMapa = criarBotao("BtnTpMapa", "Teleportar p/ Mapa", nil, Color3.fromRGB(155, 89, 182), containerMM2)
 local btnTpLobby = criarBotao("BtnTpLobby", "Teleportar p/ Lobby", nil, Color3.fromRGB(155, 89, 182), containerMM2)
+
+-- 5. Round Timer (Cronômetro do Round)
+local btnRoundTimer = criarBotao("BtnRoundTimer", "Round Timer: OFF", nil, Color3.fromRGB(52, 73, 94), containerMM2)
 
 -- Ajusta automaticamente o tamanho de rolagem da aba MM2
 layoutMM2:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
@@ -706,6 +718,72 @@ btnTpLobby.MouseButton1Click:Connect(function()
 	end
 end)
 
+-- 5. Lógica Round Timer
+local roundTimerAtivo = false
+local loopTimer = nil
+local timerUI = nil
+
+local function FormatTime(seconds)
+	local minutes = math.floor(seconds / 60)
+	local remainingSeconds = seconds % 60
+	return string.format("%02d:%02d", minutes, remainingSeconds)
+end
+
+btnRoundTimer.MouseButton1Click:Connect(function()
+	roundTimerAtivo = not roundTimerAtivo
+	if roundTimerAtivo then
+		btnRoundTimer.Text = "Round Timer: ON"
+		btnRoundTimer.BackgroundColor3 = Color3.fromRGB(46, 204, 113)
+		
+		-- Cria o TextLabel solto na tela
+		timerUI = Instance.new("TextLabel")
+		timerUI.Name = "RoundTimerText"
+		timerUI.Parent = screenGui
+		timerUI.BackgroundTransparency = 1
+		timerUI.TextColor3 = Color3.fromRGB(255, 255, 255)
+		timerUI.TextScaled = false
+		timerUI.TextSize = 24
+		timerUI.Font = Enum.Font.SourceSansBold
+		timerUI.AnchorPoint = Vector2.new(0.5, 0)
+		timerUI.Position = UDim2.new(0.5, 0, 0, 20)
+		timerUI.Size = UDim2.new(0, 200, 0, 50)
+		timerUI.TextStrokeTransparency = 0 -- Borda preta pra ficar legível
+		
+		loopTimer = task.spawn(function()
+			while task.wait(1) do
+				pcall(function()
+					local rs = game:GetService("ReplicatedStorage")
+					if rs:FindFirstChild("Remotes") and rs.Remotes:FindFirstChild("Extras") and rs.Remotes.Extras:FindFirstChild("GetTimer") then
+						local roundtime = rs.Remotes.Extras.GetTimer:InvokeServer()
+						if timerUI then
+							-- Verifica se o número é menor ou igual a 0 (partida acabou / lobby)
+							if type(roundtime) == "number" and roundtime <= 0 then
+								timerUI.Text = "Aguardando..."
+							else
+								timerUI.Text = "Tempo: " .. FormatTime(roundtime)
+							end
+						end
+					else
+						if timerUI then timerUI.Text = "Tempo: --:--" end
+					end
+				end)
+			end
+		end)
+	else
+		btnRoundTimer.Text = "Round Timer: OFF"
+		btnRoundTimer.BackgroundColor3 = Color3.fromRGB(52, 73, 94)
+		
+		if timerUI then
+			timerUI:Destroy()
+			timerUI = nil
+		end
+		if loopTimer then
+			task.cancel(loopTimer)
+			loopTimer = nil
+		end
+	end
+end)
+
 
 -- ==========================================
 -- LÓGICA CORE: TELEPORTES, COPIAR, SPEED E LOOPS
@@ -778,6 +856,19 @@ btnLoopTp.MouseButton1Click:Connect(function()
 	loopTpAtivo = not loopTpAtivo
 	if loopTpAtivo then btnLoopTp.Text = "Auto-Tp (Loop): ATIVADO" btnLoopTp.BackgroundColor3 = Color3.fromRGB(46, 204, 113)
 	else btnLoopTp.Text = "Auto-Tp (Loop): DESATIVADO" btnLoopTp.BackgroundColor3 = Color3.fromRGB(192, 57, 43) end
+end)
+local flutuanteAtivo = false
+btnToggleFlutuante.MouseButton1Click:Connect(function()
+	flutuanteAtivo = not flutuanteAtivo
+	if flutuanteAtivo then
+		btnToggleFlutuante.Text = "Widget Flutuante (Mobile): ON"
+		btnToggleFlutuante.BackgroundColor3 = Color3.fromRGB(46, 204, 113)
+		menuFlutuanteContainer.Visible = true
+	else
+		btnToggleFlutuante.Text = "Widget Flutuante (Mobile): OFF"
+		btnToggleFlutuante.BackgroundColor3 = Color3.fromRGB(192, 57, 43)
+		menuFlutuanteContainer.Visible = false
+	end
 end)
 
 task.spawn(function()
@@ -879,28 +970,49 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 local tamanhoSalvo = UDim2.new(0, TAMANHO_PADRAO_X, 0, TAMANHO_PADRAO_Y)
+
 btnMinimizar.MouseButton1Click:Connect(function()
 	minimizado = not minimizado
 	local tamanhoAlvo
 	if minimizado then
+		-- Salva o tamanho atual antes de minimizar
 		tamanhoSalvo = framePrincipal.Size 
+		
+		-- Oculta os elementos do painel
 		containerTeleportes.Visible = false 
 		containerMods.Visible = false 
 		containerMM2.Visible = false
 		barAbas.Visible = false
 		btnResizer.Visible = false 
-		tamanhoAlvo = UDim2.new(0, tamanhoSalvo.X.Offset, 0, 35) 
+		
+		-- Muda o texto para caber no espaço menor
+		titulo.Text = "Menu"
+		
+		-- Define o novo tamanho BEM menor: Largura de 140 e Altura de 35
+		tamanhoAlvo = UDim2.new(0, 140, 0, 35) 
 		btnMinimizar.Text = "+"
 	else
-		if tabBtnTeleporte.BackgroundColor3 == Color3.fromRGB(45, 45, 45) then containerTeleportes.Visible = true
-		elseif tabBtnMods.BackgroundColor3 == Color3.fromRGB(45, 45, 45) then containerMods.Visible = true
-		else containerMM2.Visible = true end
+		-- Mostra as abas novamente de acordo com a ativa
+		if tabBtnTeleporte.BackgroundColor3 == Color3.fromRGB(45, 45, 45) then 
+			containerTeleportes.Visible = true
+		elseif tabBtnMods.BackgroundColor3 == Color3.fromRGB(45, 45, 45) then 
+			containerMods.Visible = true
+		else 
+			containerMM2.Visible = true 
+		end
 		
 		barAbas.Visible = true 
 		btnResizer.Visible = true 
+		
+		-- Restaura o texto original
+		titulo.Text = "Menu Avançado V5"
+		
+		-- Restaura o tamanho que estava antes de minimizar
 		tamanhoAlvo = tamanhoSalvo 
 		btnMinimizar.Text = "-"
 	end
+	
+	-- Faz a animação suave de mudança de tamanho
 	TweenService:Create(framePrincipal, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = tamanhoAlvo}):Play()
 end)
 
@@ -912,6 +1024,11 @@ btnFechar.MouseButton1Click:Connect(function()
 	for _, obj in ipairs(workspace:GetDescendants()) do
 		if obj.Name == "GunDrop" and obj:FindFirstChild("MM2_ARMA_HL") then obj.MM2_ARMA_HL:Destroy() end
 	end
+	
+	-- Limpando o timer
+	if timerUI then timerUI:Destroy() end
+	if loopTimer then task.cancel(loopTimer) end
+
 	local char = localPlayer.Character
 	local hum = char and char:FindFirstChildOfClass("Humanoid")
 	if hum then hum.WalkSpeed = 16 end
