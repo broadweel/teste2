@@ -14,13 +14,15 @@ screenGui.Parent = playerGui
 -- Variáveis de estado gerais
 local posicaoSalva = nil
 local puloInfinitoAtivo = false
-local noclipAtivo = false -- NOVA VARIÁVEL DO NOCLIP
+local noclipAtivo = false 
+local espGeralModsAtivo = false -- NOVA VARIÁVEL ESP GERAL MODS
 local velocidadeAlvo = 16
 local walkSpeedAtivo = false 
 local loopTpAtivo = false
 local intervaloLoopTp = 1.0
 local modoLoopTp = "Salvo"
 local minimizado = false
+local loopEspMods = nil
 
 -- Variáveis da função Pulo Boost e MM2
 local mmvAtivo = false
@@ -146,7 +148,7 @@ containerMods.BackgroundTransparency = 1
 containerMods.BorderSizePixel = 0
 containerMods.ScrollBarThickness = 5
 containerMods.ScrollingDirection = Enum.ScrollingDirection.Y
-containerMods.CanvasSize = UDim2.new(0, 0, 0, 270) -- Tamanho aumentado para o botão Noclip
+containerMods.CanvasSize = UDim2.new(0, 0, 0, 300) -- Tamanho reajustado para suportar o ESP
 containerMods.Visible = false
 containerMods.Parent = framePrincipal
 
@@ -281,23 +283,25 @@ Instance.new("UICorner", txtQtdMulti).CornerRadius = UDim.new(0, 5)
 -- ==========================================
 local btnPuloInfinito = criarBotao("BtnPuloInfinito", "Pulo Infinito: DESATIVADO", UDim2.new(0, 10, 0, 10), Color3.fromRGB(192, 57, 43), containerMods)
 
--- BOTÃO DO NOCLIP INTEGRADO AQUI
 local btnNoclip = criarBotao("BtnNoclip", "Noclip: DESATIVADO", UDim2.new(0, 10, 0, 50), Color3.fromRGB(192, 57, 43), containerMods)
 
+-- BOTÃO DO ESP GERAL AQUI
+local btnEspGeralMods = criarBotao("BtnEspGeralMods", "ESP Jogadores (Verde): DESATIVADO", UDim2.new(0, 10, 0, 90), Color3.fromRGB(192, 57, 43), containerMods)
+
 local linhaMod = Instance.new("Frame")
-linhaMod.Size = UDim2.new(1, -20, 0, 1) linhaMod.Position = UDim2.new(0, 10, 0, 95)
+linhaMod.Size = UDim2.new(1, -20, 0, 1) linhaMod.Position = UDim2.new(0, 10, 0, 135)
 linhaMod.BackgroundColor3 = Color3.fromRGB(60, 60, 60) linhaMod.BorderSizePixel = 0 linhaMod.Parent = containerMods
 
-local btnToggleSpeed = criarBotao("BtnToggleSpeed", "Modificador de Speed: DESATIVADO", UDim2.new(0, 10, 0, 105), Color3.fromRGB(192, 57, 43), containerMods)
+local btnToggleSpeed = criarBotao("BtnToggleSpeed", "Modificador de Speed: DESATIVADO", UDim2.new(0, 10, 0, 145), Color3.fromRGB(192, 57, 43), containerMods)
 
 local lblVelTitulo = Instance.new("TextLabel")
-lblVelTitulo.Size = UDim2.new(1, -20, 0, 20) lblVelTitulo.Position = UDim2.new(0, 10, 0, 145)
+lblVelTitulo.Size = UDim2.new(1, -20, 0, 20) lblVelTitulo.Position = UDim2.new(0, 10, 0, 185)
 lblVelTitulo.BackgroundTransparency = 1 lblVelTitulo.Text = "Velocidade Selecionada: 16"
 lblVelTitulo.TextColor3 = Color3.fromRGB(230, 230, 230) lblVelTitulo.Font = Enum.Font.SourceSansBold
 lblVelTitulo.TextSize = 14 lblVelTitulo.TextXAlignment = Enum.TextXAlignment.Left lblVelTitulo.Parent = containerMods
 
 local sliderFundo = Instance.new("TextButton")
-sliderFundo.Size = UDim2.new(1, -20, 0, 10) sliderFundo.Position = UDim2.new(0, 10, 0, 170)
+sliderFundo.Size = UDim2.new(1, -20, 0, 10) sliderFundo.Position = UDim2.new(0, 10, 0, 210)
 sliderFundo.BackgroundColor3 = Color3.fromRGB(20, 20, 20) sliderFundo.Text = "" sliderFundo.AutoButtonColor = false sliderFundo.Parent = containerMods
 Instance.new("UICorner", sliderFundo).CornerRadius = UDim.new(0, 5)
 
@@ -312,13 +316,13 @@ sliderBotao.BackgroundColor3 = Color3.fromRGB(255, 255, 255) sliderBotao.Parent 
 Instance.new("UICorner", sliderBotao).CornerRadius = UDim.new(1, 0)
 
 local txtVelDigitar = Instance.new("TextBox")
-txtVelDigitar.Size = UDim2.new(0, 110, 0, 32) txtVelDigitar.Position = UDim2.new(0, 10, 0, 195)
+txtVelDigitar.Size = UDim2.new(0, 110, 0, 32) txtVelDigitar.Position = UDim2.new(0, 10, 0, 235)
 txtVelDigitar.BackgroundColor3 = Color3.fromRGB(20, 20, 20) txtVelDigitar.PlaceholderText = "Digitar Valor"
 txtVelDigitar.Text = "" txtVelDigitar.ClearTextOnFocus = false txtVelDigitar.TextColor3 = Color3.fromRGB(255, 255, 255)
 txtVelDigitar.Font = Enum.Font.SourceSans txtVelDigitar.TextSize = 14 txtVelDigitar.Parent = containerMods
 Instance.new("UICorner", txtVelDigitar).CornerRadius = UDim.new(0, 5)
 
-local btnVelReset = criarBotao("BtnVelReset", "Reset (16)", UDim2.new(1, -120, 0, 195), Color3.fromRGB(127, 140, 141), containerMods)
+local btnVelReset = criarBotao("BtnVelReset", "Reset (16)", UDim2.new(1, -120, 0, 235), Color3.fromRGB(127, 140, 141), containerMods)
 btnVelReset.Size = UDim2.new(0, 110, 0, 32)
 
 -- ==========================================
@@ -555,11 +559,8 @@ btnToggleMMV.MouseButton1Click:Connect(function()
 end)
 
 -- ==========================================
--- LÓGICA DO MURDER MYSTERY 2 E NOCLIP
+-- LÓGICA ESP GERAL (MODS) E NOCLIP
 -- ==========================================
-local espGeralAtivo = false
-local loopEsp = nil
-local loopArma = nil
 
 -- Lógica Noclip Integrada
 btnNoclip.MouseButton1Click:Connect(function()
@@ -573,7 +574,7 @@ btnNoclip.MouseButton1Click:Connect(function()
 	end
 end)
 
--- Loop que desabilita colisão do corpo em tempo real antes de desenhar cada quadro
+-- Loop Noclip
 RunService.Stepped:Connect(function()
 	if noclipAtivo then
 		local char = localPlayer.Character
@@ -587,6 +588,50 @@ RunService.Stepped:Connect(function()
 	end
 end)
 
+local function limparEspMods()
+	for _, p in ipairs(Players:GetPlayers()) do
+		if p.Character and p.Character:FindFirstChild("MODS_ESP_HL") then p.Character.MODS_ESP_HL:Destroy() end
+	end
+end
+
+-- Lógica ESP Geral da Aba Mods
+btnEspGeralMods.MouseButton1Click:Connect(function()
+	espGeralModsAtivo = not espGeralModsAtivo
+	if espGeralModsAtivo then
+		btnEspGeralMods.Text = "ESP Jogadores (Verde): ATIVADO"
+		btnEspGeralMods.BackgroundColor3 = Color3.fromRGB(46, 204, 113)
+		loopEspMods = RunService.Heartbeat:Connect(function()
+			for _, p in ipairs(Players:GetPlayers()) do
+				if p ~= localPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+					local hl = p.Character:FindFirstChild("MODS_ESP_HL")
+					if not hl then
+						hl = Instance.new("Highlight") 
+						hl.Name = "MODS_ESP_HL" 
+						hl.FillColor = Color3.fromRGB(0, 255, 0) 
+						hl.OutlineColor = Color3.fromRGB(0, 255, 0)
+						hl.FillTransparency = 0.5 
+						hl.OutlineTransparency = 0 
+						hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop 
+						hl.Parent = p.Character
+					end
+				end
+			end
+		end)
+	else
+		btnEspGeralMods.Text = "ESP Jogadores (Verde): DESATIVADO"
+		btnEspGeralMods.BackgroundColor3 = Color3.fromRGB(192, 57, 43)
+		if loopEspMods then loopEspMods:Disconnect() end
+		limparEspMods()
+	end
+end)
+
+
+-- ==========================================
+-- LÓGICA DO MURDER MYSTERY 2
+-- ==========================================
+local espGeralAtivo = false
+local loopEsp = nil
+local loopArma = nil
 
 local function getMurderer()
 	for _, p in ipairs(Players:GetPlayers()) do
@@ -877,7 +922,8 @@ btnMinimizar.MouseButton1Click:Connect(function()
 end)
 
 btnFechar.MouseButton1Click:Connect(function()
-	puloInfinitoAtivo = false loopTpAtivo = false walkSpeedAtivo = false mmvAtivo = false espGeralAtivo = false autoFacaAtivo = false noclipAtivo = false
+	puloInfinitoAtivo = false loopTpAtivo = false walkSpeedAtivo = false mmvAtivo = false espGeralAtivo = false autoFacaAtivo = false noclipAtivo = false espGeralModsAtivo = false
+	if loopEspMods then loopEspMods:Disconnect() end limparEspMods()
 	if loopEsp then loopEsp:Disconnect() end if loopArma then loopArma:Disconnect() end limparESP()
 	for _, obj in ipairs(workspace:GetDescendants()) do if obj.Name == "GunDrop" and obj:FindFirstChild("MM2_ARMA_HL") then obj.MM2_ARMA_HL:Destroy() end end
 	if timerUI then timerUI:Destroy() end if loopTimer then task.cancel(loopTimer) end
