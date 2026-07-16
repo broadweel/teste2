@@ -1,4 +1,4 @@
--- [[ Steal A Fish - Script V34 Final (Custom Input, Updated DB, Player ESP, Fish ESP, Enemy Lock, Fixed Fish Alert) ]] --
+-- [[ Steal A Fish - Script V35 Final (Invis Fixes, Auto-TP Sync, Z-Index Click Fix) ]] --
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
@@ -7,115 +7,45 @@ local Mouse = LocalPlayer:GetMouse()
 
 local FromRGB = Color3.fromRGB
 
--- [[ BASE DE DADOS COMPLETA DE PEIXES (Atualizada) ]] --
+-- [[ BASE DE DADOS COMPLETA DE PEIXES ]] --
 local FISH_DATABASE = {
-    -- COMMON
-    {Name = "Sea Star", Rarity = "Common"},
-    {Name = "Salmon", Rarity = "Common"},
-    {Name = "Sea Horse", Rarity = "Common"},
-    {Name = "Tralalero", Rarity = "Common"},
-    {Name = "Jellyfish", Rarity = "Common"},
-    {Name = "Tung Sahur", Rarity = "Common"},
-    {Name = "Pufferfish", Rarity = "Common"},
-    {Name = "Pufferturtle", Rarity = "Common"},
-    {Name = "Sapper", Rarity = "Common"},
-    {Name = "Seatung", Rarity = "Common"},
-    {Name = "Turtle", Rarity = "Common"},
-
-    -- RARE
-    {Name = "Blobfish", Rarity = "Rare"},
-    {Name = "Brr Patapim", Rarity = "Rare"},
-    {Name = "Piranha", Rarity = "Rare"},
-    {Name = "Udin Din Din", Rarity = "Rare"},
-    {Name = "Clown Din Din", Rarity = "Rare"},
-    {Name = "Anglerfish", Rarity = "Rare"},
-    {Name = "Octopus", Rarity = "Rare"},
-    {Name = "Tralelelo Junior", Rarity = "Rare"},
-    {Name = "Barracuda", Rarity = "Rare"},
-    {Name = "Trippy Troppy", Rarity = "Rare"},
-    {Name = "Trulimero Trulichina", Rarity = "Rare"},
-
-    -- EPIC
-    {Name = "Shark", Rarity = "Epic"},
-    {Name = "Gold Fish", Rarity = "Epic"},
-    {Name = "Mermaid", Rarity = "Epic"},
-    {Name = "Skeleton Fish", Rarity = "Epic"},
-    {Name = "Axolotl", Rarity = "Epic"},
-    {Name = "Hammer Shark", Rarity = "Epic"},
-    {Name = "The Waken", Rarity = "Epic"},
-    {Name = "Sturgeon", Rarity = "Epic"},
-    {Name = "Saw Shark", Rarity = "Epic"},
-    {Name = "Creepy Chef", Rarity = "Epic"},
-    {Name = "Eye Fish", Rarity = "Epic"},
-
-    -- LEGENDARY
-    {Name = "Whale", Rarity = "Legendary"},
-    {Name = "Infected Barracuda", Rarity = "Legendary"},
-    {Name = "Barracuda Eater", Rarity = "Legendary"},
-    {Name = "Megalodon", Rarity = "Legendary"},
-
-    -- MYTHIC
-    {Name = "Monster", Rarity = "Mythic"},
-    {Name = "Nightmare Shark", Rarity = "Mythic"},
-    {Name = "Kraken", Rarity = "Mythic"},
-    {Name = "Alein", Rarity = "Mythic"},
-    {Name = "Blue Dragon", Rarity = "Mythic"},
-    {Name = "Blue Worm", Rarity = "Mythic"},
-    {Name = "Loch Ness", Rarity = "Mythic"},
-    {Name = "Train Eater", Rarity = "Mythic"},
-    {Name = "Creepy Fish", Rarity = "Mythic"},
-    {Name = "Zombie Worm", Rarity = "Mythic"},
-    {Name = "Godzilla", Rarity = "Mythic"},
-    {Name = "Robolodon", Rarity = "Mythic"},
-    {Name = "Chef Crabracadabra", Rarity = "Mythic"},
-
-    -- SECRET
-    {Name = "Scottfish", Rarity = "Secret"},
-    {Name = "Spiderfish", Rarity = "Secret"},
-    {Name = "Nightmare Blobfish", Rarity = "Secret"},
-    {Name = "Orcalelo Orcala", Rarity = "Secret"},
-    {Name = "Hungry Tung", Rarity = "Secret"},
-    {Name = "Lirili Prawn", Rarity = "Secret"},
-    {Name = "Baby Deep Eater", Rarity = "Secret"},
-    {Name = "Lirili Fish", Rarity = "Secret"},
-    {Name = "Hungry Deer", Rarity = "Secret"},
-    {Name = "Sacabambaspis", Rarity = "Secret"},
-    {Name = "The Moon", Rarity = "Secret"},
-    {Name = "Job Sahur", Rarity = "Secret"},
-    {Name = "Nuke Fish", Rarity = "Secret"},
-
-    -- ABYSS
-    {Name = "Zholthagru", Rarity = "Abyss"},
-    {Name = "Deep Eater", Rarity = "Abyss"},
-    {Name = "Drengothua", Rarity = "Abyss"},
-    {Name = "Bob", Rarity = "Abyss"},
-
-    -- LIMITED / EVENT
-    {Name = "Evil Bloop", Rarity = "Limited"},
-    {Name = "Demogorgon Worm", Rarity = "Limited"},
-    {Name = "Undindun Eater", Rarity = "Limited"},
-    {Name = "Infected Sky", Rarity = "Limited"},
-    {Name = "Lurker", Rarity = "Limited"},
-    {Name = "Eldritch Turtle", Rarity = "Limited"},
-    {Name = "Orcalero Eater", Rarity = "Limited"},
-    {Name = "Pumpkin Angler", Rarity = "Limited"},
-
-    -- ADMIN
-    {Name = "Spinning Fish", Rarity = "Admin"},
-    {Name = "Taco Fish", Rarity = "Admin"},
-    {Name = "Rave Turtle", Rarity = "Admin"},
+    {Name = "Sea Star", Rarity = "Common"}, {Name = "Salmon", Rarity = "Common"}, {Name = "Sea Horse", Rarity = "Common"},
+    {Name = "Tralalero", Rarity = "Common"}, {Name = "Jellyfish", Rarity = "Common"}, {Name = "Tung Sahur", Rarity = "Common"},
+    {Name = "Pufferfish", Rarity = "Common"}, {Name = "Pufferturtle", Rarity = "Common"}, {Name = "Sapper", Rarity = "Common"},
+    {Name = "Seatung", Rarity = "Common"}, {Name = "Turtle", Rarity = "Common"}, {Name = "Blobfish", Rarity = "Rare"},
+    {Name = "Brr Patapim", Rarity = "Rare"}, {Name = "Piranha", Rarity = "Rare"}, {Name = "Udin Din Din", Rarity = "Rare"},
+    {Name = "Clown Din Din", Rarity = "Rare"}, {Name = "Anglerfish", Rarity = "Rare"}, {Name = "Octopus", Rarity = "Rare"},
+    {Name = "Tralelelo Junior", Rarity = "Rare"}, {Name = "Barracuda", Rarity = "Rare"}, {Name = "Trippy Troppy", Rarity = "Rare"},
+    {Name = "Trulimero Trulichina", Rarity = "Rare"}, {Name = "Shark", Rarity = "Epic"}, {Name = "Gold Fish", Rarity = "Epic"},
+    {Name = "Mermaid", Rarity = "Epic"}, {Name = "Skeleton Fish", Rarity = "Epic"}, {Name = "Axolotl", Rarity = "Epic"},
+    {Name = "Hammer Shark", Rarity = "Epic"}, {Name = "The Waken", Rarity = "Epic"}, {Name = "Sturgeon", Rarity = "Epic"},
+    {Name = "Saw Shark", Rarity = "Epic"}, {Name = "Creepy Chef", Rarity = "Epic"}, {Name = "Eye Fish", Rarity = "Epic"},
+    {Name = "Whale", Rarity = "Legendary"}, {Name = "Infected Barracuda", Rarity = "Legendary"}, {Name = "Barracuda Eater", Rarity = "Legendary"},
+    {Name = "Megalodon", Rarity = "Legendary"}, {Name = "Monster", Rarity = "Mythic"}, {Name = "Nightmare Shark", Rarity = "Mythic"},
+    {Name = "Kraken", Rarity = "Mythic"}, {Name = "Alein", Rarity = "Mythic"}, {Name = "Blue Dragon", Rarity = "Mythic"},
+    {Name = "Blue Worm", Rarity = "Mythic"}, {Name = "Loch Ness", Rarity = "Mythic"}, {Name = "Train Eater", Rarity = "Mythic"},
+    {Name = "Creepy Fish", Rarity = "Mythic"}, {Name = "Zombie Worm", Rarity = "Mythic"}, {Name = "Godzilla", Rarity = "Mythic"},
+    {Name = "Robolodon", Rarity = "Mythic"}, {Name = "Chef Crabracadabra", Rarity = "Mythic"}, {Name = "Scottfish", Rarity = "Secret"},
+    {Name = "Spiderfish", Rarity = "Secret"}, {Name = "Nightmare Blobfish", Rarity = "Secret"}, {Name = "Orcalelo Orcala", Rarity = "Secret"},
+    {Name = "Hungry Tung", Rarity = "Secret"}, {Name = "Lirili Prawn", Rarity = "Secret"}, {Name = "Baby Deep Eater", Rarity = "Secret"},
+    {Name = "Lirili Fish", Rarity = "Secret"}, {Name = "Hungry Deer", Rarity = "Secret"}, {Name = "Sacabambaspis", Rarity = "Secret"},
+    {Name = "The Moon", Rarity = "Secret"}, {Name = "Job Sahur", Rarity = "Secret"}, {Name = "Nuke Fish", Rarity = "Secret"},
+    {Name = "Zholthagru", Rarity = "Abyss"}, {Name = "Deep Eater", Rarity = "Abyss"}, {Name = "Drengothua", Rarity = "Abyss"},
+    {Name = "Bob", Rarity = "Abyss"}, {Name = "Evil Bloop", Rarity = "Limited"}, {Name = "Demogorgon Worm", Rarity = "Limited"},
+    {Name = "Undindun Eater", Rarity = "Limited"}, {Name = "Infected Sky", Rarity = "Limited"}, {Name = "Lurker", Rarity = "Limited"},
+    {Name = "Eldritch Turtle", Rarity = "Limited"}, {Name = "Orcalero Eater", Rarity = "Limited"}, {Name = "Pumpkin Angler", Rarity = "Limited"},
+    {Name = "Spinning Fish", Rarity = "Admin"}, {Name = "Taco Fish", Rarity = "Admin"}, {Name = "Rave Turtle", Rarity = "Admin"},
     {Name = "Rog", Rarity = "Admin"}
 }
 
-local PeixesAlvo = {} -- Lista de peixes ativos para o alerta
+local PeixesAlvo = {}
 
--- Configuração da GUI Principal
+-- [[ INTERFACE GRÁFICA ]] --
 local TycoonLockManagerGUI = Instance.new("ScreenGui")
 TycoonLockManagerGUI.Name = "TycoonLockManagerGUI"
 TycoonLockManagerGUI.Parent = game:GetService("CoreGui") 
 TycoonLockManagerGUI.ResetOnSpawn = false
 
--- INDICADOR DE TEMPO FIXO E ARRASTÁVEL NO TOPO DA TELA
 local TopTimerGui = Instance.new("ScreenGui")
 TopTimerGui.Name = "TopBaseTimerGUI"
 TopTimerGui.Parent = game:GetService("CoreGui")
@@ -140,14 +70,12 @@ TopTimerLabel.Text = "Your Lock: Unlocked"
 TopTimerLabel.TextColor3 = FromRGB(255, 255, 255)
 TopTimerLabel.TextSize = 16
 
--- MENU PRINCIPAL
 local MainFrame = Instance.new("Frame", TycoonLockManagerGUI)
 MainFrame.Size = UDim2.new(0, 250, 0, 580)
 MainFrame.Position = UDim2.new(0.5, -125, 0.5, -290)
 MainFrame.BackgroundColor3 = FromRGB(35, 37, 40)
 MainFrame.Active = true
 MainFrame.Draggable = true
-MainFrame.Visible = true
 MainFrame.ClipsDescendants = false
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 8)
 Instance.new("UIStroke", MainFrame).Color = FromRGB(80, 80, 90)
@@ -209,6 +137,7 @@ local ContentHolder = Instance.new("Frame", MainFrame)
 ContentHolder.Size = UDim2.new(1, 0, 1, -65)
 ContentHolder.Position = UDim2.new(0, 0, 0, 65)
 ContentHolder.BackgroundTransparency = 1
+ContentHolder.ClipsDescendants = true -- ISSO FIXA OS BOTÕES FLUTUANDO SOBRE O TÍTULO
 
 local MainPage = Instance.new("Frame", ContentHolder)
 MainPage.Size = UDim2.new(1, 0, 1, 0)
@@ -216,7 +145,7 @@ MainPage.BackgroundTransparency = 1
 local LayoutMain = Instance.new("UIListLayout", MainPage)
 LayoutMain.HorizontalAlignment = Enum.HorizontalAlignment.Center
 LayoutMain.Padding = UDim.new(0, 8)
-LayoutMain.SortOrder = Enum.SortOrder.LayoutOrder
+LayoutMain.SortOrder = Enum.SortOrder.LayoutOrder -- FORÇA A ORDEM
 Instance.new("UIPadding", MainPage).PaddingTop = UDim.new(0, 10)
 
 local MiscPage = Instance.new("ScrollingFrame", ContentHolder)
@@ -224,16 +153,15 @@ MiscPage.Size = UDim2.new(1, 0, 1, 0)
 MiscPage.BackgroundTransparency = 1
 MiscPage.Visible = false
 MiscPage.ScrollBarThickness = 4
-MiscPage.CanvasSize = UDim2.new(0, 0, 0, 840)
+MiscPage.CanvasSize = UDim2.new(0, 0, 0, 880)
 local LayoutMisc = Instance.new("UIListLayout", MiscPage)
 LayoutMisc.HorizontalAlignment = Enum.HorizontalAlignment.Center
 LayoutMisc.Padding = UDim.new(0, 8)
-LayoutMisc.SortOrder = Enum.SortOrder.LayoutOrder
+LayoutMisc.SortOrder = Enum.SortOrder.LayoutOrder -- FORÇA A ORDEM
 Instance.new("UIPadding", MiscPage).PaddingTop = UDim.new(0, 10)
 
--- NOTIFIER LABEL (MAIN)
+-- MAIN ELEMENTS
 local FishNotificationLabel = Instance.new("TextLabel", MainPage)
-FishNotificationLabel.Name = "FishNotificationLabel"
 FishNotificationLabel.Size = UDim2.new(1, -20, 0, 30)
 FishNotificationLabel.BackgroundColor3 = FromRGB(67, 181, 129)
 FishNotificationLabel.Font = Enum.Font.SourceSansBold
@@ -243,7 +171,6 @@ FishNotificationLabel.TextSize = 16
 FishNotificationLabel.Visible = false
 Instance.new("UICorner", FishNotificationLabel).CornerRadius = UDim.new(0, 6)
 
--- ELEMENTOS DA GUI: MAIN
 local LockTimerLabel = Instance.new("TextLabel", MainPage)
 LockTimerLabel.Size = UDim2.new(1, -20, 0, 20)
 LockTimerLabel.BackgroundTransparency = 1
@@ -306,7 +233,8 @@ FishNotifierButton.TextColor3 = FromRGB(255, 255, 255)
 FishNotifierButton.TextSize = 16
 Instance.new("UICorner", FishNotifierButton).CornerRadius = UDim.new(0, 6)
 
--- ELEMENTOS DA GUI: MISC
+
+-- MISC ELEMENTS
 local PlayerEspButton = Instance.new("TextButton", MiscPage)
 PlayerEspButton.Size = UDim2.new(1, -20, 0, 30)
 PlayerEspButton.BackgroundColor3 = FromRGB(88, 101, 242)
@@ -352,6 +280,26 @@ InvisButton.TextColor3 = FromRGB(255, 255, 255)
 InvisButton.TextSize = 16
 Instance.new("UICorner", InvisButton).CornerRadius = UDim.new(0, 6)
 
+-- NOVO BOTAO: MODO DE RETORNO DO INVISIVEL
+local invisReturnToStart = true
+local InvisModeButton = Instance.new("TextButton", MiscPage)
+InvisModeButton.Size = UDim2.new(1, -20, 0, 22)
+InvisModeButton.BackgroundColor3 = FromRGB(60, 62, 66)
+InvisModeButton.Font = Enum.Font.SourceSansBold
+InvisModeButton.Text = "On Disable: TP to Start"
+InvisModeButton.TextColor3 = FromRGB(220, 220, 220)
+InvisModeButton.TextSize = 13
+Instance.new("UICorner", InvisModeButton).CornerRadius = UDim.new(0, 6)
+
+InvisModeButton.MouseButton1Click:Connect(function()
+    invisReturnToStart = not invisReturnToStart
+    if invisReturnToStart then
+        InvisModeButton.Text = "On Disable: TP to Start"
+    else
+        InvisModeButton.Text = "On Disable: Stay at End"
+    end
+end)
+
 local WalkspeedToggle = Instance.new("TextButton", MiscPage)
 WalkspeedToggle.Size = UDim2.new(1, -20, 0, 30)
 WalkspeedToggle.BackgroundColor3 = FromRGB(88, 101, 242)
@@ -382,9 +330,7 @@ WalkspeedValueLabel.Text = "Speed: 70"
 WalkspeedValueLabel.TextColor3 = FromRGB(255, 255, 255)
 WalkspeedValueLabel.TextSize = 14
 
-
--- [[ SISTEMA AVANÇADO DE BUSCA E FILTROS DE PEIXES ]] --
-
+-- [[ SEARCH & CUSTOM FISH ]] --
 local CustomFishSectionLabel = Instance.new("TextLabel", MiscPage)
 CustomFishSectionLabel.Size = UDim2.new(1, -20, 0, 20)
 CustomFishSectionLabel.BackgroundTransparency = 1
@@ -393,11 +339,9 @@ CustomFishSectionLabel.Text = "--- WIKI & CUSTOM FISH ALERTS ---"
 CustomFishSectionLabel.TextColor3 = FromRGB(255, 255, 255)
 CustomFishSectionLabel.TextSize = 13
 
--- Painel de Filtros de Raridade rápidos
 local RarityPanel = Instance.new("Frame", MiscPage)
 RarityPanel.Size = UDim2.new(1, -20, 0, 60)
 RarityPanel.BackgroundTransparency = 1
-
 local RarityLayout = Instance.new("UIGridLayout", RarityPanel)
 RarityLayout.CellSize = UDim2.new(0.5, -5, 0, 25)
 RarityLayout.CellPadding = UDim2.new(0, 10, 0, 8)
@@ -412,13 +356,11 @@ local function CreateRarityBtn(rarityName, color)
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 5)
     return btn
 end
-
 local ToggleMythic = CreateRarityBtn("Mythic", FromRGB(162, 53, 217))
 local ToggleLegendary = CreateRarityBtn("Legendary", FromRGB(224, 169, 41))
 local ToggleRare = CreateRarityBtn("Rare", FromRGB(52, 152, 219))
 local ToggleCommon = CreateRarityBtn("Common", FromRGB(127, 140, 141))
 
--- Caixa de texto Inteligente (Auto-Complete + Entrada Personalizada)
 local SearchContainer = Instance.new("Frame", MiscPage)
 SearchContainer.Size = UDim2.new(1, -20, 0, 30)
 SearchContainer.BackgroundTransparency = 1
@@ -434,23 +376,19 @@ CustomFishTextBox.TextColor3 = FromRGB(255, 255, 255)
 CustomFishTextBox.TextSize = 14
 CustomFishTextBox.ZIndex = 10
 Instance.new("UICorner", CustomFishTextBox).CornerRadius = UDim.new(0, 6)
-local SearchBoxStroke = Instance.new("UIStroke", CustomFishTextBox)
-SearchBoxStroke.Color = FromRGB(80, 80, 90)
+Instance.new("UIStroke", CustomFishTextBox).Color = FromRGB(80, 80, 90)
 
--- Container Dropdown para sugestões
 local DropdownFrame = Instance.new("Frame", SearchContainer)
 DropdownFrame.Size = UDim2.new(1, 0, 0, 0)
 DropdownFrame.Position = UDim2.new(0, 0, 1, 2)
 DropdownFrame.BackgroundColor3 = FromRGB(30, 32, 35)
 DropdownFrame.BorderSizePixel = 0
 DropdownFrame.Visible = false
-DropdownFrame.ZIndex = 11
+DropdownFrame.ZIndex = 15
+DropdownFrame.Active = true -- FIX 1: Impede clique fantasma
 Instance.new("UICorner", DropdownFrame).CornerRadius = UDim.new(0, 6)
-local DropdownStroke = Instance.new("UIStroke", DropdownFrame)
-DropdownStroke.Color = FromRGB(100, 100, 110)
-
-local DropdownLayout = Instance.new("UIListLayout", DropdownFrame)
-DropdownLayout.SortOrder = Enum.SortOrder.LayoutOrder
+Instance.new("UIStroke", DropdownFrame).Color = FromRGB(100, 100, 110)
+Instance.new("UIListLayout", DropdownFrame).SortOrder = Enum.SortOrder.LayoutOrder
 
 local ClearFishBtn = Instance.new("TextButton", MiscPage)
 ClearFishBtn.Size = UDim2.new(1, -20, 0, 28)
@@ -459,6 +397,7 @@ ClearFishBtn.Font = Enum.Font.SourceSansBold
 ClearFishBtn.Text = "Clear Custom Targets"
 ClearFishBtn.TextColor3 = FromRGB(255, 255, 255)
 ClearFishBtn.TextSize = 14
+ClearFishBtn.ZIndex = 1
 Instance.new("UICorner", ClearFishBtn).CornerRadius = UDim.new(0, 6)
 
 local CustomListDisplay = Instance.new("TextLabel", MiscPage)
@@ -470,85 +409,75 @@ CustomListDisplay.TextColor3 = FromRGB(180, 180, 180)
 CustomListDisplay.TextSize = 12
 CustomListDisplay.TextWrapped = true
 
--- Lógica para atualizar a tela de alvos ativos
+-- ORDEM DOS BOTÕES --
+-- Na hora de criar o botão, adicione o LayoutOrder:
+PlayerEspButton.LayoutOrder = 1
+NoclipButton.LayoutOrder = 2
+AntiRagdollButton.LayoutOrder = 3
+InfJumpButton.LayoutOrder = 4
+
+InvisButton.LayoutOrder = 5
+InvisModeButton.LayoutOrder = 6
+
+WalkspeedToggle.LayoutOrder = 7
+WalkspeedSliderBG.LayoutOrder = 8
+
+-- Seção da Wiki:
+CustomFishSectionLabel.LayoutOrder = 9
+RarityPanel.LayoutOrder = 10
+SearchContainer.LayoutOrder = 11
+ClearFishBtn.LayoutOrder = 12
+CustomListDisplay.LayoutOrder = 13
+
+-- FUNÇÕES DA UI
 local function UpdateCustomListDisplay()
     local names = {}
-    for fish, active in pairs(PeixesAlvo) do
-        if active then
-            table.insert(names, fish)
-        end
-    end
-    if #names == 0 then
-        CustomListDisplay.Text = "Current targets: (None)"
-    else
-        table.sort(names)
-        CustomListDisplay.Text = "Current targets: " .. table.concat(names, ", ")
-    end
+    for fish, active in pairs(PeixesAlvo) do if active then table.insert(names, fish) end end
+    if #names == 0 then CustomListDisplay.Text = "Current targets: (None)"
+    else table.sort(names); CustomListDisplay.Text = "Current targets: " .. table.concat(names, ", ") end
 end
 
--- Ativadores Rápidos de Raridade
 local function ToggleRarityGroup(rarityName)
-    local anyActiveOfThisRarity = false
-    for _, item in ipairs(FISH_DATABASE) do
-        if item.Rarity == rarityName and PeixesAlvo[item.Name] then
-            anyActiveOfThisRarity = true
-            break
-        end
-    end
-
-    for _, item in ipairs(FISH_DATABASE) do
-        if item.Rarity == rarityName then
-            PeixesAlvo[item.Name] = not anyActiveOfThisRarity or nil
-        end
-    end
+    local anyActive = false
+    for _, item in ipairs(FISH_DATABASE) do if item.Rarity == rarityName and PeixesAlvo[item.Name] then anyActive = true; break end end
+    for _, item in ipairs(FISH_DATABASE) do if item.Rarity == rarityName then PeixesAlvo[item.Name] = not anyActive or nil end end
     UpdateCustomListDisplay()
 end
-
 ToggleMythic.MouseButton1Click:Connect(function() ToggleRarityGroup("Mythic") end)
 ToggleLegendary.MouseButton1Click:Connect(function() ToggleRarityGroup("Legendary") end)
 ToggleRare.MouseButton1Click:Connect(function() ToggleRarityGroup("Rare") end)
 ToggleCommon.MouseButton1Click:Connect(function() ToggleRarityGroup("Common") end)
 
--- Limpar Dropdown
 local function ClearDropdown()
-    for _, child in ipairs(DropdownFrame:GetChildren()) do
-        if child:IsA("TextButton") then child:Destroy() end
-    end
+    for _, child in ipairs(DropdownFrame:GetChildren()) do if child:IsA("TextButton") then child:Destroy() end end
     DropdownFrame.Visible = false
 end
 
--- Sistema Inteligente: Filtro ao Digitar + Auto-Complete
 CustomFishTextBox:GetPropertyChangedSignal("Text"):Connect(function()
     local input = string.lower(CustomFishTextBox.Text)
     ClearDropdown()
-    
     if input == "" then return end
     
     local matches = {}
-    for _, fishData in ipairs(FISH_DATABASE) do
-        if string.find(string.lower(fishData.Name), input) then
-            table.insert(matches, fishData)
-        end
-    end
+    for _, f in ipairs(FISH_DATABASE) do if string.find(string.lower(f.Name), input) then table.insert(matches, f) end end
     
     if #matches > 0 then
         DropdownFrame.Visible = true
         local limit = math.min(#matches, 5)
         DropdownFrame.Size = UDim2.new(1, 0, 0, limit * 26)
-        
         for i = 1, limit do
             local fData = matches[i]
             local suggestionBtn = Instance.new("TextButton", DropdownFrame)
             suggestionBtn.Size = UDim2.new(1, 0, 0, 26)
             suggestionBtn.BackgroundColor3 = FromRGB(40, 42, 45)
             suggestionBtn.BorderSizePixel = 0
-            suggestionBtn.ZIndex = 12
+            suggestionBtn.ZIndex = 16
+            suggestionBtn.Active = true -- FIX 1: Impede clique fantasma
             suggestionBtn.Font = Enum.Font.SourceSansBold
             suggestionBtn.Text = "  " .. fData.Name .. " (" .. fData.Rarity .. ")"
             suggestionBtn.TextColor3 = FromRGB(220, 220, 220)
             suggestionBtn.TextXAlignment = Enum.TextXAlignment.Left
             suggestionBtn.TextSize = 13
-            
             suggestionBtn.MouseButton1Click:Connect(function()
                 PeixesAlvo[fData.Name] = true
                 CustomFishTextBox.Text = ""
@@ -559,19 +488,11 @@ CustomFishTextBox:GetPropertyChangedSignal("Text"):Connect(function()
     end
 end)
 
-CustomFishTextBox.FocusLost:Connect(function(enterPressed)
-    local rawText = CustomFishTextBox.Text
-    local cleanText = rawText:gsub("^%s*(.-)%s*$", "%1")
-    
+CustomFishTextBox.FocusLost:Connect(function()
+    local cleanText = CustomFishTextBox.Text:gsub("^%s*(.-)%s*$", "%1")
     if cleanText ~= "" and cleanText ~= "Start typing fish name..." then
         local matchedName = cleanText
-        for _, fishData in ipairs(FISH_DATABASE) do
-            if string.lower(fishData.Name) == string.lower(cleanText) then
-                matchedName = fishData.Name
-                break
-            end
-        end
-        
+        for _, f in ipairs(FISH_DATABASE) do if string.lower(f.Name) == string.lower(cleanText) then matchedName = f.Name; break end end
         PeixesAlvo[matchedName] = true
         CustomFishTextBox.Text = ""
         UpdateCustomListDisplay()
@@ -580,177 +501,165 @@ CustomFishTextBox.FocusLost:Connect(function(enterPressed)
     ClearDropdown()
 end)
 
-ClearFishBtn.MouseButton1Click:Connect(function()
-    table.clear(PeixesAlvo)
-    UpdateCustomListDisplay()
-end)
+ClearFishBtn.MouseButton1Click:Connect(function() table.clear(PeixesAlvo); UpdateCustomListDisplay() end)
 
--- [[ SISTEMA DE PLAYER ESP ]] --
+-- PLAYER ESP
 local playerEspEnabled = false
 local playerEspConnection = nil
-
 local function createPlayerESP(player)
     if player == LocalPlayer then return end
-
-    local function setupCharacterESP(char)
+    local function setupESP(char)
         if not playerEspEnabled then return end
-        
         local hrp = char:WaitForChild("HumanoidRootPart", 10)
         local hum = char:WaitForChild("Humanoid", 10)
         if not hrp or not hum then return end
-
         if char:FindFirstChild("PlayerESP_Highlight") then char.PlayerESP_Highlight:Destroy() end
         if char:FindFirstChild("PlayerESP_Billboard") then char.PlayerESP_Billboard:Destroy() end
-
-        local hl = Instance.new("Highlight")
-        hl.Name = "PlayerESP_Highlight"
-        hl.Parent = char
-        hl.FillColor = FromRGB(231, 76, 60)
-        hl.FillTransparency = 0.6
-        hl.OutlineColor = FromRGB(255, 255, 255)
-        hl.OutlineTransparency = 0
-        hl.Adornee = char
-
-        local billboard = Instance.new("BillboardGui")
-        billboard.Name = "PlayerESP_Billboard"
-        billboard.Size = UDim2.new(0, 150, 0, 30)
-        billboard.StudsOffset = Vector3.new(0, 3.5, 0)
-        billboard.AlwaysOnTop = true
-        billboard.Adornee = hrp
-        billboard.Parent = char
-
-        local textLabel = Instance.new("TextLabel")
-        textLabel.Size = UDim2.new(1, 0, 1, 0)
-        textLabel.BackgroundTransparency = 1
-        textLabel.Font = Enum.Font.SourceSansBold
-        textLabel.TextColor3 = FromRGB(255, 255, 255)
-        textLabel.TextSize = 14
-        textLabel.TextStrokeTransparency = 0
-        textLabel.TextStrokeColor3 = FromRGB(0, 0, 0)
-        textLabel.Parent = billboard
-
+        local hl = Instance.new("Highlight", char)
+        hl.Name = "PlayerESP_Highlight"; hl.FillColor = FromRGB(231, 76, 60); hl.FillTransparency = 0.6; hl.OutlineTransparency = 0
+        local bb = Instance.new("BillboardGui", char)
+        bb.Name = "PlayerESP_Billboard"; bb.Size = UDim2.new(0, 150, 0, 30); bb.StudsOffset = Vector3.new(0, 3.5, 0); bb.AlwaysOnTop = true; bb.Adornee = hrp
+        local txt = Instance.new("TextLabel", bb)
+        txt.Size = UDim2.new(1, 0, 1, 0); txt.BackgroundTransparency = 1; txt.Font = Enum.Font.SourceSansBold; txt.TextColor3 = FromRGB(255, 255, 255); txt.TextSize = 14; txt.TextStrokeTransparency = 0
         local loopConn
         loopConn = RunService.RenderStepped:Connect(function()
-            if not playerEspEnabled or not char:Parent() or not hrp:Parent() then
-                if loopConn then loopConn:Disconnect() end
-                return
-            end
+            if not playerEspEnabled or not char:Parent() or not hrp:Parent() then if loopConn then loopConn:Disconnect() end; return end
             local myHrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-            if myHrp then
-                local distance = math.floor((hrp.Position - myHrp.Position).Magnitude)
-                textLabel.Text = player.Name .. " [" .. distance .. "s]"
-            else
-                textLabel.Text = player.Name
-            end
+            txt.Text = myHrp and (player.Name .. " [" .. math.floor((hrp.Position - myHrp.Position).Magnitude) .. "s]") or player.Name
         end)
     end
-
-    if player.Character then setupCharacterESP(player.Character) end
-    player.CharacterAdded:Connect(setupCharacterESP)
+    if player.Character then setupESP(player.Character) end
+    player.CharacterAdded:Connect(setupESP)
 end
-
 local function cleanAllPlayerESP()
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player.Character then
-            local hl = player.Character:FindFirstChild("PlayerESP_Highlight")
-            local bb = player.Character:FindFirstChild("PlayerESP_Billboard")
-            if hl then hl:Destroy() end
-            if bb then bb:Destroy() end
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p.Character then
+            if p.Character:FindFirstChild("PlayerESP_Highlight") then p.Character.PlayerESP_Highlight:Destroy() end
+            if p.Character:FindFirstChild("PlayerESP_Billboard") then p.Character.PlayerESP_Billboard:Destroy() end
         end
     end
 end
-
 PlayerEspButton.MouseButton1Click:Connect(function()
     playerEspEnabled = not playerEspEnabled
     if playerEspEnabled then
-        PlayerEspButton.Text = "Player ESP: ON"
-        PlayerEspButton.BackgroundColor3 = FromRGB(67, 181, 129)
-        
-        for _, player in ipairs(Players:GetPlayers()) do createPlayerESP(player) end
+        PlayerEspButton.Text = "Player ESP: ON"; PlayerEspButton.BackgroundColor3 = FromRGB(67, 181, 129)
+        for _, p in ipairs(Players:GetPlayers()) do createPlayerESP(p) end
         playerEspConnection = Players.PlayerAdded:Connect(createPlayerESP)
     else
-        PlayerEspButton.Text = "Player ESP: OFF"
-        PlayerEspButton.BackgroundColor3 = FromRGB(88, 101, 242)
-        
+        PlayerEspButton.Text = "Player ESP: OFF"; PlayerEspButton.BackgroundColor3 = FromRGB(88, 101, 242)
         if playerEspConnection then playerEspConnection:Disconnect(); playerEspConnection = nil end
         cleanAllPlayerESP()
     end
 end)
 
-
--- [[ RESTANTE DO CÓDIGO (Lógica Funcional do Lock e Utilidades) ]] --
-
-CloseButton.MouseButton1Click:Connect(function() 
-    TycoonLockManagerGUI:Destroy() 
-    TopTimerGui:Destroy()
-    cleanAllPlayerESP()
-end)
-
+-- LOGICA GERAL E MENUS
+CloseButton.MouseButton1Click:Connect(function() TycoonLockManagerGUI:Destroy(); TopTimerGui:Destroy(); cleanAllPlayerESP() end)
 local minimized = false
 MinimizeButton.MouseButton1Click:Connect(function()
     minimized = not minimized
-    if minimized then
-        MainFrame.Size = UDim2.new(0, 250, 0, 35)
-        TabContainer.Visible = false
-        ContentHolder.Visible = false
-        MinimizeButton.Text = "+"
-    else
-        MainFrame.Size = UDim2.new(0, 250, 0, 580)
-        TabContainer.Visible = true
-        ContentHolder.Visible = true
-        MinimizeButton.Text = "-"
-    end
+    MainFrame.Size = minimized and UDim2.new(0, 250, 0, 35) or UDim2.new(0, 250, 0, 580)
+    TabContainer.Visible = not minimized; ContentHolder.Visible = not minimized
+    MinimizeButton.Text = minimized and "+" or "-"
 end)
-
-MainTabButton.MouseButton1Click:Connect(function()
-    MainPage.Visible = true; MiscPage.Visible = false
-    MainTabButton.BackgroundColor3 = FromRGB(55, 57, 60)
-    MiscTabButton.BackgroundColor3 = FromRGB(35, 37, 40)
-end)
-
-MiscTabButton.MouseButton1Click:Connect(function()
-    MainPage.Visible = false; MiscPage.Visible = true
-    MiscTabButton.BackgroundColor3 = FromRGB(55, 57, 60)
-    MainTabButton.BackgroundColor3 = FromRGB(35, 37, 40)
-end)
+MainTabButton.MouseButton1Click:Connect(function() MainPage.Visible = true; MiscPage.Visible = false; MainTabButton.BackgroundColor3 = FromRGB(55, 57, 60); MiscTabButton.BackgroundColor3 = FromRGB(35, 37, 40) end)
+MiscTabButton.MouseButton1Click:Connect(function() MainPage.Visible = false; MiscPage.Visible = true; MiscTabButton.BackgroundColor3 = FromRGB(55, 57, 60); MainTabButton.BackgroundColor3 = FromRGB(35, 37, 40) end)
 
 local topTimerEnabled = false
 TopTimerToggleBtn.MouseButton1Click:Connect(function()
     topTimerEnabled = not topTimerEnabled
-    if topTimerEnabled then
-        TopTimerToggleBtn.Text = "Top Screen Timer: ON"
-        TopTimerToggleBtn.BackgroundColor3 = FromRGB(67, 181, 129)
-        TopTimerFrame.Visible = true
-    else
-        TopTimerToggleBtn.Text = "Top Screen Timer: OFF"
-        TopTimerToggleBtn.BackgroundColor3 = FromRGB(88, 101, 242)
-        TopTimerFrame.Visible = false
-    end
+    TopTimerToggleBtn.Text = topTimerEnabled and "Top Screen Timer: ON" or "Top Screen Timer: OFF"
+    TopTimerToggleBtn.BackgroundColor3 = topTimerEnabled and FromRGB(67, 181, 129) or FromRGB(88, 101, 242)
+    TopTimerFrame.Visible = topTimerEnabled
 end)
 
+-- NOVO SISTEMA DE INVISIBILIDADE (FIX 2 & 3)
+local invisEnabled = false
+local INVISIBILITY_POSITION = Vector3.new(-25.95, 84, 3537.55)
+local invisActivationPos = nil
+
+local function setCharacterTransparency(character, transparency)
+    for _, descendant in ipairs(character:GetDescendants()) do
+        if (descendant:IsA("BasePart") or descendant:IsA("Decal")) and descendant.Name ~= "HumanoidRootPart" then
+            descendant.Transparency = transparency
+        end
+    end
+end
+
+local function SetInvisState(state)
+    if state == invisEnabled then return end
+    invisEnabled = state
+
+    if invisEnabled then
+        InvisButton.Text = "Invisibility (FE): ON"
+        InvisButton.BackgroundColor3 = FromRGB(67, 181, 129)
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            local hrp = char.HumanoidRootPart
+            invisActivationPos = hrp.CFrame -- Salva onde ativou
+            char:MoveTo(INVISIBILITY_POSITION)
+            task.wait(0.15)
+            local seat = Instance.new("Seat")
+            seat.Name = "invischair"
+            seat.Anchored = false
+            seat.CanCollide = false
+            seat.Transparency = 1
+            seat.Position = INVISIBILITY_POSITION
+            seat.Parent = workspace
+            local weld = Instance.new("Weld")
+            weld.Part0 = seat
+            weld.Part1 = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+            weld.Parent = seat
+            task.wait()
+            seat.CFrame = invisActivationPos
+            setCharacterTransparency(char, 0.5)
+        end
+    else
+        InvisButton.Text = "Invisibility (FE): OFF"
+        InvisButton.BackgroundColor3 = FromRGB(88, 101, 242)
+        
+        local char = LocalPlayer.Character
+        local currentGhostPos = char and char:FindFirstChild("HumanoidRootPart") and char.HumanoidRootPart.CFrame
+        
+        local invisChair = workspace:FindFirstChild("invischair")
+        if invisChair then invisChair:Destroy() end
+        if char then setCharacterTransparency(char, 0) end
+        
+        -- Aplica lógica de retorno escolhida
+        task.wait(0.1)
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            if invisReturnToStart and invisActivationPos then
+                char.HumanoidRootPart.CFrame = invisActivationPos
+            elseif not invisReturnToStart and currentGhostPos then
+                char.HumanoidRootPart.CFrame = currentGhostPos
+            end
+        end
+    end
+end
+
+InvisButton.MouseButton1Click:Connect(function() SetInvisState(not invisEnabled) end)
+
+
+-- AUTO TP & LOCK LOGIC
 local function ParseTimeToSeconds(text)
     if not text then return 0 end
     text = string.lower(text)
     local minutes = string.match(text, "(%d+)%s*m")
-    local seconds = string.match(text, "(%d+)%s*s")
-    local totalSeconds = 0
-    if minutes then totalSeconds = totalSeconds + (tonumber(minutes) * 60) end
-    if seconds then totalSeconds = totalSeconds + tonumber(seconds)
+    -- Modificado para ler decimais (ex: 0.1s)
+    local seconds = string.match(text, "(%d+%.?%d*)%s*s") 
+    local total = 0
+    if minutes then total = total + (tonumber(minutes) * 60) end
+    if seconds then total = total + tonumber(seconds)
     elseif not minutes then
-        local cleanNum = string.match(text, "(%d+)")
-        if cleanNum then totalSeconds = tonumber(cleanNum) end
+        local cleanNum = string.match(text, "(%d+%.?%d*)")
+        if cleanNum then total = tonumber(cleanNum) end
     end
-    return totalSeconds
+    return total
 end
 
 local function FormatSecondsToText(seconds)
     if seconds <= 0 then return "Unlocked" end
-    if seconds < 60 then return tostring(seconds) .. "s"
-    else
-        local mins = math.floor(seconds / 60)
-        local secs = seconds % 60
-        return string.format("%dm %02ds", mins, secs)
-    end
+    if seconds < 60 then return tostring(seconds) .. "s" end
+    return string.format("%dm %02ds", math.floor(seconds / 60), seconds % 60)
 end
 
 local autoLockEnabled = false
@@ -762,19 +671,21 @@ local currentSpeed = 70
 
 AutoLockButton.MouseButton1Click:Connect(function()
     autoLockEnabled = not autoLockEnabled
-    if autoLockEnabled then
-        AutoLockButton.Text = "Auto-Renew Lock: ON"
-        AutoLockButton.BackgroundColor3 = FromRGB(67, 181, 129)
-    else
-        AutoLockButton.Text = "Auto-Renew Lock: OFF"
-        AutoLockButton.BackgroundColor3 = FromRGB(88, 101, 242)
-    end
+    AutoLockButton.Text = autoLockEnabled and "Auto-Renew Lock: ON" or "Auto-Renew Lock: OFF"
+    AutoLockButton.BackgroundColor3 = autoLockEnabled and FromRGB(67, 181, 129) or FromRGB(88, 101, 242)
 end)
 
 local function ExecuteLockTeleport(forceBuyModel)
     if not forceBuyModel or isTeleporting then return end
     isTeleporting = true
     task.spawn(function()
+        
+        -- FIX 3: Se estiver invisível, ele desliga automaticamente antes de puxar para comprar
+        if invisEnabled then
+            SetInvisState(false)
+            task.wait(0.2)
+        end
+
         local lock1 = forceBuyModel:FindFirstChild("Lock", true)
         local lockPart = lock1 and lock1:FindFirstChild("Lock", true) or lock1
         local char = LocalPlayer.Character
@@ -788,15 +699,12 @@ local function ExecuteLockTeleport(forceBuyModel)
             
             hum.WalkSpeed = 0
             hum.JumpPower = 0
-            
             hrp.AssemblyLinearVelocity = Vector3.zero
             hrp.AssemblyAngularVelocity = Vector3.zero
             hrp.CFrame = lockPart.CFrame * CFrame.new(0, 3, 0) 
             
-            task.wait(2.0)
-            if char and char:FindFirstChild("HumanoidRootPart") then
-                char.HumanoidRootPart.CFrame = previousCFrame 
-            end
+            task.wait(3.0)
+            if char and char:FindFirstChild("HumanoidRootPart") then char.HumanoidRootPart.CFrame = previousCFrame end
             if hum then
                 hum.WalkSpeed = walkspeedEnabled and currentSpeed or 16
                 hum.JumpPower = oldJumpPower
@@ -815,164 +723,64 @@ RunService.Heartbeat:Connect(function()
         for _, base in ipairs(tycoons:GetChildren()) do
             local ownerAttr = base:GetAttribute("Owner")
             local ownerVal = base:FindFirstChild("Owner")
-            if ownerAttr == LocalPlayer.Name or (ownerVal and (ownerVal.Value == LocalPlayer or ownerVal.Value == LocalPlayer.Name)) then 
-                myBase = base 
-                break 
-            end
+            if ownerAttr == LocalPlayer.Name or (ownerVal and (ownerVal.Value == LocalPlayer or ownerVal.Value == LocalPlayer.Name)) then myBase = base; break end
         end
     end
+    
     if myBase then
-        local tycoonModel = myBase:FindFirstChild("Tycoon", true) or myBase
-        local forcefield = tycoonModel:FindFirstChild("ForcefieldFolder", true)
+        local forcefield = myBase:FindFirstChild("ForcefieldFolder", true)
         local timeLeft = 0
         if forcefield then
             local screen1 = forcefield:FindFirstChild("Screen", true)
             local screen2 = screen1 and screen1:FindFirstChild("Screen", true) or screen1
             local surfaceGui = screen2 and screen2:FindFirstChild("SurfaceGui", true)
             local timeLabel = surfaceGui and surfaceGui:FindFirstChild("Time", true)
-            if timeLabel and timeLabel:IsA("TextLabel") then
-                timeLeft = ParseTimeToSeconds(timeLabel.Text)
-            end
+            if timeLabel and timeLabel:IsA("TextLabel") then timeLeft = ParseTimeToSeconds(timeLabel.Text) end
         end
-        local displayColor = FromRGB(255, 200, 80)
-        local displayText = "Unlocked"
-        if timeLeft > 0 then
-            displayColor = timeLeft <= 10 and FromRGB(231, 76, 60) or FromRGB(85, 255, 85)
-            displayText = FormatSecondsToText(timeLeft)
-        end
+        
+        local displayColor = timeLeft > 0 and (timeLeft <= 10 and FromRGB(231, 76, 60) or FromRGB(85, 255, 85)) or FromRGB(255, 200, 80)
+        local displayText = FormatSecondsToText(timeLeft)
         LockTimerLabel.Text = "Lock Time: " .. displayText
         LockTimerLabel.TextColor3 = displayColor
         TopTimerLabel.Text = "Your Lock: " .. displayText
         
+        -- FIX: Gatilho de TP com antecedência (Segurança de Ping)
         if autoLockEnabled and not isTeleporting then
             if tick() - lastLockTime > lockCooldown then
                 local buttons = forcefield and forcefield:FindFirstChild("Buttons", true)
                 local forceBuy = buttons and buttons:FindFirstChild("ForceFieldBuy", true)
-                if timeLeft == 1 then
-                    lastLockTime = tick()
-                    task.spawn(function()
-                        task.wait(0.15)
-                        if not isTeleporting then ExecuteLockTeleport(forceBuy) end
-                    end)
-                elseif timeLeft == 0 then
+                
+                -- Se o tempo for menor ou igual a 0.5s (caso mostre decimais)
+                if timeLeft > 0 and timeLeft <= 0.5 then
                     lastLockTime = tick()
                     ExecuteLockTeleport(forceBuy)
+                elseif timeLeft == 1 then
+                    -- Detectou 1 segundo. Aguarda 0.6s e teleporta (1.0 - 0.5 = 0.5s de antecedência)
+                    task.delay(0.5, function()
+                        if autoLockEnabled and not isTeleporting then
+                            lastLockTime = tick()
+                            ExecuteLockTeleport(forceBuy)
+                        end
+                    end)
                 end
             end
         end
     else
-        LockTimerLabel.Text = "Lock Time: Base Not Found"
-        LockTimerLabel.TextColor3 = FromRGB(200, 200, 200)
+        LockTimerLabel.Text = "Lock Time: Base Not Found"; LockTimerLabel.TextColor3 = FromRGB(200, 200, 200)
         TopTimerLabel.Text = "Your Lock: Base Not Found"
     end
 end)
 
--- Enemy Lock Timers ESP
-local enemyTimersEnabled = false
-local enemyTimersConnection = nil
-EnemyTimersButton.MouseButton1Click:Connect(function()
-    enemyTimersEnabled = not enemyTimersEnabled
-    if enemyTimersEnabled then
-        EnemyTimersButton.Text = "Enemy Lock Timers: ON"
-        EnemyTimersButton.BackgroundColor3 = FromRGB(67, 181, 129)
-        enemyTimersConnection = RunService.Heartbeat:Connect(function()
-            local map = workspace:FindFirstChild("Map")
-            local tycoons = map and map:FindFirstChild("Tycoons")
-            if not tycoons then return end
-            for _, base in ipairs(tycoons:GetChildren()) do
-                local ownerAttr = base:GetAttribute("Owner")
-                local ownerVal = base:FindFirstChild("Owner")
-                local isMyBase = false
-                if ownerAttr == LocalPlayer.Name then isMyBase = true end
-                if ownerVal and (ownerVal.Value == LocalPlayer or ownerVal.Value == LocalPlayer.Name) then isMyBase = true end
-                if not isMyBase then
-                    local tycoonModel = base:FindFirstChild("Tycoon", true) or base
-                    local forcefield = tycoonModel:FindFirstChild("ForcefieldFolder", true)
-                    local targetPart = forcefield and forcefield:FindFirstChild("Screen", true)
-                    if targetPart and targetPart:IsA("Model") then targetPart = targetPart.PrimaryPart or targetPart:FindFirstChildWhichIsA("BasePart") end
-                    if not targetPart and forcefield then targetPart = forcefield:FindFirstChildWhichIsA("BasePart", true) end
-                    if targetPart then
-                        local billboard = targetPart:FindFirstChild("EnemyTimerESP")
-                        if not billboard then
-                            billboard = Instance.new("BillboardGui", targetPart)
-                            billboard.Name = "EnemyTimerESP"
-                            billboard.Size = UDim2.new(0, 110, 0, 30)
-                            billboard.StudsOffset = Vector3.new(0, 5, 0)
-                            billboard.AlwaysOnTop = true
-                            local bgFrame = Instance.new("Frame", billboard)
-                            bgFrame.Name = "Background"
-                            bgFrame.Size = UDim2.new(1, 0, 1, 0)
-                            bgFrame.BackgroundColor3 = FromRGB(25, 27, 30)
-                            bgFrame.BackgroundTransparency = 0.3
-                            Instance.new("UICorner", bgFrame).CornerRadius = UDim.new(0, 4)
-                            Instance.new("UIStroke", bgFrame).Color = FromRGB(80, 80, 90)
-                            local textLabel = Instance.new("TextLabel", bgFrame)
-                            textLabel.Size = UDim2.new(1, 0, 1, 0)
-                            textLabel.BackgroundTransparency = 1
-                            textLabel.Font = Enum.Font.SourceSansBold
-                            textLabel.TextSize = 14
-                            textLabel.Name = "TimeLabel"
-                        end
-                        local timeLeft = 0
-                        local timeColor = FromRGB(85, 255, 85)
-                        local screen1 = forcefield:FindFirstChild("Screen", true)
-                        local screen2 = screen1 and screen1:FindFirstChild("Screen", true) or screen1
-                        local surfaceGui = screen2 and screen2:FindFirstChild("SurfaceGui", true)
-                        local timeLabel = surfaceGui and surfaceGui:FindFirstChild("Time", true)
-                        if timeLabel and timeLabel:IsA("TextLabel") then timeLeft = ParseTimeToSeconds(timeLabel.Text) end
-                        if timeLeft > 0 then
-                            if timeLeft <= 10 then timeColor = FromRGB(231, 76, 60)
-                            elseif timeLeft <= 30 then timeColor = FromRGB(255, 200, 80) end
-                            billboard.Background.TimeLabel.Text = "Lock: " .. FormatSecondsToText(timeLeft)
-                        else
-                            billboard.Background.TimeLabel.Text = "Unlocked"
-                            timeColor = FromRGB(255, 200, 80)
-                        end
-                        billboard.Background.TimeLabel.TextColor3 = timeColor
-                    end
-                end
-            end
-        end)
-    else
-        EnemyTimersButton.Text = "Enemy Lock Timers: OFF"
-        EnemyTimersButton.BackgroundColor3 = FromRGB(88, 101, 242)
-        if enemyTimersConnection then enemyTimersConnection:Disconnect() end
-        local map = workspace:FindFirstChild("Map")
-        local tycoons = map and map:FindFirstChild("Tycoons")
-        if tycoons then
-            for _, base in ipairs(tycoons:GetDescendants()) do
-                if base.Name == "EnemyTimerESP" then base:Destroy() end
-            end
-        end
-    end
-end)
-
--- Manual TP
+-- OUTROS (Enemy ESP, Manual TP, Fish ESP, Fish Notifier, Walkspeed, Noclip, Anti-Ragdoll)
 TpToLockButton.MouseButton1Click:Connect(function()
-    local map = workspace:FindFirstChild("Map")
-    local tycoons = map and map:FindFirstChild("Tycoons")
+    local tycoons = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Tycoons")
     if tycoons then
         for _, base in ipairs(tycoons:GetChildren()) do
-            local ownerAttr = base:GetAttribute("Owner")
-            local ownerVal = base:FindFirstChild("Owner")
-            local isMyBase = false
-            if ownerAttr == LocalPlayer.Name then isMyBase = true end
-            if ownerVal and (ownerVal.Value == LocalPlayer or ownerVal.Value == LocalPlayer.Name) then isMyBase = true end
-            if isMyBase then
-                local tycoonModel = base:FindFirstChild("Tycoon", true) or base
-                local forcefield = tycoonModel:FindFirstChild("ForcefieldFolder", true)
-                local buttons = forcefield and forcefield:FindFirstChild("Buttons", true)
-                local forceBuy = buttons and buttons:FindFirstChild("ForceFieldBuy", true)
-                local lockPart = nil
-                if forceBuy then
-                    local lock1 = forceBuy:FindFirstChild("Lock", true)
-                    lockPart = lock1 and lock1:FindFirstChild("Lock", true) or lock1
-                end
-                if lockPart and lockPart:IsA("BasePart") then
-                    local char = LocalPlayer.Character
-                    if char and char:FindFirstChild("HumanoidRootPart") then
-                        char.HumanoidRootPart.CFrame = lockPart.CFrame * CFrame.new(0, 3, 0)
-                    end
+            if base:GetAttribute("Owner") == LocalPlayer.Name or (base:FindFirstChild("Owner") and (base.Owner.Value == LocalPlayer or base.Owner.Value == LocalPlayer.Name)) then
+                local fb = base:FindFirstChild("ForceFieldBuy", true)
+                local lockPart = fb and (fb:FindFirstChild("Lock", true) and fb.Lock:FindFirstChild("Lock", true) or fb:FindFirstChild("Lock", true))
+                if lockPart and lockPart:IsA("BasePart") and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = lockPart.CFrame * CFrame.new(0, 3, 0)
                 end
                 break
             end
@@ -980,53 +788,65 @@ TpToLockButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Fish ESP
-local espEnabled = false
-local espConnection = nil
-FishEspButton.MouseButton1Click:Connect(function()
-    espEnabled = not espEnabled
-    if espEnabled then
-        FishEspButton.Text = "Fish ESP: ON"
-        FishEspButton.BackgroundColor3 = FromRGB(67, 181, 129)
-        espConnection = RunService.Heartbeat:Connect(function()
-            local rayFiltered = workspace:FindFirstChild("RayFiltered")
-            local objects = rayFiltered and rayFiltered:FindFirstChild("Objects")
-            if objects then
-                for _, obj in ipairs(objects:GetChildren()) do
-                    if obj:IsA("Model") and not obj:FindFirstChild("FishESP_Highlight") then
-                        local hl = Instance.new("Highlight", obj)
-                        hl.Name = "FishESP_Highlight"
-                        hl.FillTransparency = 1 
-                        hl.OutlineColor = Color3.fromRGB(0, 0, 0)
-                        hl.OutlineTransparency = 0
-                        local fishName = obj:GetAttribute("Class") or obj.Name
-                        local billboard = Instance.new("BillboardGui", obj)
-                        billboard.Name = "FishESP_Text"
-                        billboard.Size = UDim2.new(0, 100, 0, 30)
-                        billboard.StudsOffset = Vector3.new(0, 2, 0)
-                        billboard.AlwaysOnTop = true
-                        local textLabel = Instance.new("TextLabel", billboard)
-                        textLabel.Size = UDim2.new(1, 0, 1, 0)
-                        textLabel.BackgroundTransparency = 1
-                        textLabel.Text = fishName
-                        textLabel.TextColor3 = Color3.fromRGB(85, 255, 85)
-                        textLabel.TextStrokeTransparency = 0
-                        textLabel.Font = Enum.Font.SourceSansBold
-                        textLabel.TextSize = 14
+local enemyTimersEnabled, enemyTimersConnection = false, nil
+EnemyTimersButton.MouseButton1Click:Connect(function()
+    enemyTimersEnabled = not enemyTimersEnabled
+    EnemyTimersButton.Text = enemyTimersEnabled and "Enemy Lock Timers: ON" or "Enemy Lock Timers: OFF"
+    EnemyTimersButton.BackgroundColor3 = enemyTimersEnabled and FromRGB(67, 181, 129) or FromRGB(88, 101, 242)
+    if enemyTimersEnabled then
+        enemyTimersConnection = RunService.Heartbeat:Connect(function()
+            local tycoons = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Tycoons")
+            if not tycoons then return end
+            for _, base in ipairs(tycoons:GetChildren()) do
+                local isMyBase = (base:GetAttribute("Owner") == LocalPlayer.Name) or (base:FindFirstChild("Owner") and (base.Owner.Value == LocalPlayer or base.Owner.Value == LocalPlayer.Name))
+                if not isMyBase then
+                    local forcefield = base:FindFirstChild("ForcefieldFolder", true)
+                    local targetPart = forcefield and (forcefield:FindFirstChild("Screen", true) and (forcefield.Screen.PrimaryPart or forcefield.Screen:FindFirstChildWhichIsA("BasePart")) or forcefield:FindFirstChildWhichIsA("BasePart", true))
+                    if targetPart then
+                        local bb = targetPart:FindFirstChild("EnemyTimerESP")
+                        if not bb then
+                            bb = Instance.new("BillboardGui", targetPart); bb.Name = "EnemyTimerESP"; bb.Size = UDim2.new(0, 110, 0, 30); bb.StudsOffset = Vector3.new(0, 5, 0); bb.AlwaysOnTop = true
+                            local bg = Instance.new("Frame", bb); bg.Name = "Background"; bg.Size = UDim2.new(1, 0, 1, 0); bg.BackgroundColor3 = FromRGB(25, 27, 30); bg.BackgroundTransparency = 0.3
+                            Instance.new("UICorner", bg).CornerRadius = UDim.new(0, 4); Instance.new("UIStroke", bg).Color = FromRGB(80, 80, 90)
+                            local txt = Instance.new("TextLabel", bg); txt.Name = "TimeLabel"; txt.Size = UDim2.new(1, 0, 1, 0); txt.BackgroundTransparency = 1; txt.Font = Enum.Font.SourceSansBold; txt.TextSize = 14
+                        end
+                        local tl = forcefield:FindFirstChild("Time", true)
+                        local tLeft = tl and tl:IsA("TextLabel") and ParseTimeToSeconds(tl.Text) or 0
+                        bb.Background.TimeLabel.Text = tLeft > 0 and ("Lock: " .. FormatSecondsToText(tLeft)) or "Unlocked"
+                        bb.Background.TimeLabel.TextColor3 = tLeft > 0 and (tLeft <= 10 and FromRGB(231, 76, 60) or (tLeft <= 30 and FromRGB(255, 200, 80) or FromRGB(85, 255, 85))) or FromRGB(255, 200, 80)
                     end
                 end
             end
         end)
     else
-        FishEspButton.Text = "Fish ESP: OFF"
-        FishEspButton.BackgroundColor3 = FromRGB(88, 101, 242)
+        if enemyTimersConnection then enemyTimersConnection:Disconnect() end
+        local tycoons = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Tycoons")
+        if tycoons then for _, d in ipairs(tycoons:GetDescendants()) do if d.Name == "EnemyTimerESP" then d:Destroy() end end end
+    end
+end)
+
+local espEnabled, espConnection = false, nil
+FishEspButton.MouseButton1Click:Connect(function()
+    espEnabled = not espEnabled
+    FishEspButton.Text = espEnabled and "Fish ESP: ON" or "Fish ESP: OFF"
+    FishEspButton.BackgroundColor3 = espEnabled and FromRGB(67, 181, 129) or FromRGB(88, 101, 242)
+    if espEnabled then
+        espConnection = RunService.Heartbeat:Connect(function()
+            local objects = workspace:FindFirstChild("RayFiltered") and workspace.RayFiltered:FindFirstChild("Objects")
+            if objects then
+                for _, obj in ipairs(objects:GetChildren()) do
+                    if obj:IsA("Model") and not obj:FindFirstChild("FishESP_Highlight") then
+                        local hl = Instance.new("Highlight", obj); hl.Name = "FishESP_Highlight"; hl.FillTransparency = 1; hl.OutlineColor = Color3.fromRGB(0,0,0); hl.OutlineTransparency = 0
+                        local bb = Instance.new("BillboardGui", obj); bb.Name = "FishESP_Text"; bb.Size = UDim2.new(0, 100, 0, 30); bb.StudsOffset = Vector3.new(0, 2, 0); bb.AlwaysOnTop = true
+                        local txt = Instance.new("TextLabel", bb); txt.Size = UDim2.new(1, 0, 1, 0); txt.BackgroundTransparency = 1; txt.Text = obj:GetAttribute("Class") or obj.Name; txt.TextColor3 = Color3.fromRGB(85, 255, 85); txt.TextStrokeTransparency = 0; txt.Font = Enum.Font.SourceSansBold; txt.TextSize = 14
+                    end
+                end
+            end
+        end)
+    else
         if espConnection then espConnection:Disconnect() end
         local objects = workspace:FindFirstChild("RayFiltered") and workspace.RayFiltered:FindFirstChild("Objects")
-        if objects then
-            for _, obj in ipairs(objects:GetDescendants()) do
-                if obj.Name == "FishESP_Highlight" or obj.Name == "FishESP_Text" then obj:Destroy() end
-            end
-        end
+        if objects then for _, d in ipairs(objects:GetDescendants()) do if d.Name == "FishESP_Highlight" or d.Name == "FishESP_Text" then d:Destroy() end end end
     end
 end)
 
@@ -1035,244 +855,119 @@ somAlerta.SoundId = "rbxassetid://138090596"
 somAlerta.Volume = 1
 somAlerta.Parent = game:GetService("SoundService")
 
--- Fish Notifier (V34 - Filtro Anti-Meshes e Nomes Limpos)
-local notifierEnabled = false
-local notifierConnection = nil
-
+local notifierEnabled, notifierConnection = false, nil
 FishNotifierButton.MouseButton1Click:Connect(function()
     notifierEnabled = not notifierEnabled
+    FishNotifierButton.Text = notifierEnabled and "Fish Notifier: ON" or "Fish Notifier: OFF"
+    FishNotifierButton.BackgroundColor3 = notifierEnabled and FromRGB(67, 181, 129) or FromRGB(88, 101, 242)
+    FishNotificationLabel.Visible = notifierEnabled
     if notifierEnabled then
-        FishNotifierButton.Text = "Fish Notifier: ON"
-        FishNotifierButton.BackgroundColor3 = FromRGB(67, 181, 129)
-        FishNotificationLabel.Text = "Waiting for fish..."
-        FishNotificationLabel.BackgroundColor3 = FromRGB(67, 181, 129)
-        FishNotificationLabel.Visible = true
-        
-        local rayFiltered = workspace:WaitForChild("RayFiltered", 5)
-        local objectsFolder = rayFiltered and rayFiltered:WaitForChild("Objects", 5)
-        
-        if objectsFolder then
-            notifierConnection = objectsFolder.DescendantAdded:Connect(function(child)
+        FishNotificationLabel.Text = "Waiting for fish..."; FishNotificationLabel.BackgroundColor3 = FromRGB(67, 181, 129)
+        local objects = workspace:WaitForChild("RayFiltered", 5) and workspace.RayFiltered:WaitForChild("Objects", 5)
+        if objects then
+            notifierConnection = objects.DescendantAdded:Connect(function(child)
                 task.delay(0.5, function()
                     if not child or not child.Parent then return end
-                    
-                    local classAttr = child:GetAttribute("Class")
-                    if not classAttr then return end
-                    
-                    local fishName = classAttr:gsub("^%s*(.-)%s*$", "%1")
-                    if fishName == "" then return end
-                    
-                    local matchFound = false
+                    local cAttr = child:GetAttribute("Class")
+                    if not cAttr then return end
+                    local fName = cAttr:gsub("^%s*(.-)%s*$", "%1")
+                    if fName == "" then return end
+                    local match = false
                     for alvo, active in pairs(PeixesAlvo) do
-                        if active then
-                            local cleanAlvo = alvo:gsub("^%s*(.-)%s*$", "%1")
-                            if string.lower(cleanAlvo) == string.lower(fishName) then
-                                matchFound = true
-                                break
-                            end
-                        end
+                        if active and string.lower(alvo:gsub("^%s*(.-)%s*$", "%1")) == string.lower(fName) then match = true; break end
                     end
-                    
-                    if matchFound then
+                    if match then
                         somAlerta:Play()
-                        FishNotificationLabel.Text = "🚨 SPAWNOU: " .. string.upper(fishName) .. "! 🚨"
-                        FishNotificationLabel.BackgroundColor3 = FromRGB(231, 76, 60)
-                        game:GetService("StarterGui"):SetCore("SendNotification", {
-                            Title = "🚨 PEIXE DETECTADO! 🚨",
-                            Text = fishName .. " acabou de spawnar!",
-                            Duration = 8,
-                            Button1 = "OK"
-                        })
+                        FishNotificationLabel.Text = "🚨 SPAWNOU: " .. string.upper(fName) .. "! 🚨"; FishNotificationLabel.BackgroundColor3 = FromRGB(231, 76, 60)
+                        game:GetService("StarterGui"):SetCore("SendNotification", {Title = "🚨 PEIXE DETECTADO! 🚨", Text = fName .. " acabou de spawnar!", Duration = 8, Button1 = "OK"})
                     else
-                        FishNotificationLabel.Text = "Last: " .. fishName
-                        FishNotificationLabel.BackgroundColor3 = FromRGB(67, 181, 129)
+                        FishNotificationLabel.Text = "Last: " .. fName; FishNotificationLabel.BackgroundColor3 = FromRGB(67, 181, 129)
                     end
                 end)
             end)
-        else
-            FishNotificationLabel.Text = "Erro: Pasta RayFiltered não encontrada!"
-            FishNotificationLabel.BackgroundColor3 = FromRGB(231, 76, 60)
-        end
+        else FishNotificationLabel.Text = "Erro: Pasta RayFiltered não encontrada!"; FishNotificationLabel.BackgroundColor3 = FromRGB(231, 76, 60) end
     else
-        FishNotifierButton.Text = "Fish Notifier: OFF"
-        FishNotifierButton.BackgroundColor3 = FromRGB(88, 101, 242)
-        FishNotificationLabel.Visible = false
         if notifierConnection then notifierConnection:Disconnect() end
     end
 end)
 
--- Noclip
-local noclipEnabled = false
-local noclipConnection = nil
+local noclipEnabled, noclipConnection = false, nil
 NoclipButton.MouseButton1Click:Connect(function()
     noclipEnabled = not noclipEnabled
+    NoclipButton.Text = noclipEnabled and "Noclip: ON" or "Noclip: OFF"
+    NoclipButton.BackgroundColor3 = noclipEnabled and FromRGB(67, 181, 129) or FromRGB(88, 101, 242)
     if noclipEnabled then
-        NoclipButton.Text = "Noclip: ON"
-        NoclipButton.BackgroundColor3 = FromRGB(67, 181, 129)
         noclipConnection = RunService.Stepped:Connect(function()
-            local char = LocalPlayer.Character
-            if char then
-                for _, part in ipairs(char:GetDescendants()) do
-                    if part:IsA("BasePart") and part.CanCollide then part.CanCollide = false end
-                end
-            end
+            if LocalPlayer.Character then for _, p in ipairs(LocalPlayer.Character:GetDescendants()) do if p:IsA("BasePart") and p.CanCollide then p.CanCollide = false end end end
         end)
-    else
-        NoclipButton.Text = "Noclip: OFF"
-        NoclipButton.BackgroundColor3 = FromRGB(88, 101, 242)
-        if noclipConnection then noclipConnection:Disconnect() end
-    end
+    else if noclipConnection then noclipConnection:Disconnect() end end
 end)
 
--- FE Invisibility
-local invisEnabled = false
-local INVISIBILITY_POSITION = Vector3.new(-25.95, 84, 3537.55)
-local function setCharacterTransparency(character, transparency)
-    for _, descendant in ipairs(character:GetDescendants()) do
-        if descendant:IsA("BasePart") or descendant:IsA("Decal") then
-            if descendant.Name ~= "HumanoidRootPart" then descendant.Transparency = transparency end
-        end
-    end
-end
-
-InvisButton.MouseButton1Click:Connect(function()
-    invisEnabled = not invisEnabled
-    if invisEnabled then
-        InvisButton.Text = "Invisibility (FE): ON"
-        InvisButton.BackgroundColor3 = FromRGB(67, 181, 129)
-        local char = LocalPlayer.Character
-        if char and char:FindFirstChild("HumanoidRootPart") then
-            local hrp = char.HumanoidRootPart
-            local savedPosition = hrp.CFrame
-            char:MoveTo(INVISIBILITY_POSITION)
-            task.wait(0.15)
-            local seat = Instance.new("Seat")
-            seat.Name = "invischair"
-            seat.Anchored = false
-            seat.CanCollide = false
-            seat.Transparency = 1
-            seat.Position = INVISIBILITY_POSITION
-            seat.Parent = workspace
-            local weld = Instance.new("Weld")
-            weld.Part0 = seat
-            weld.Part1 = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
-            weld.Parent = seat
-            task.wait()
-            seat.CFrame = savedPosition
-            setCharacterTransparency(char, 0.5)
-        end
-    else
-        InvisButton.Text = "Invisibility (FE): OFF"
-        InvisButton.BackgroundColor3 = FromRGB(88, 101, 242)
-        local invisChair = workspace:FindFirstChild("invischair")
-        if invisChair then invisChair:Destroy() end
-        if LocalPlayer.Character then setCharacterTransparency(LocalPlayer.Character, 0) end
-    end
-end)
-
--- Anti-Ragdoll
-local antiRagdollEnabled = false
-local ragdollConnection = nil
-local kbConnections = {}
-local function handleKnockbackForce(v)
-    if not antiRagdollEnabled then return end
-    if v:IsA("BodyVelocity") then v.Velocity *= 0
-    elseif v:IsA("LinearVelocity") then v.VectorVelocity *= 0
-    elseif v:IsA("VectorForce") then v.Force *= 0 end
-end
+local antiRagdollEnabled, ragdollConnection, kbConnections = false, nil, {}
+local function handleKB(v) if antiRagdollEnabled then if v:IsA("BodyVelocity") then v.Velocity *= 0 elseif v:IsA("LinearVelocity") then v.VectorVelocity *= 0 elseif v:IsA("VectorForce") then v.Force *= 0 end end end
 local function setupAntiKB(char)
     local hrp = char:WaitForChild("HumanoidRootPart", 5)
     if not hrp then return end
-    for _, v in ipairs(hrp:GetChildren()) do handleKnockbackForce(v) end
-    local conn = hrp.ChildAdded:Connect(handleKnockbackForce)
-    table.insert(kbConnections, conn)
+    for _, v in ipairs(hrp:GetChildren()) do handleKB(v) end
+    table.insert(kbConnections, hrp.ChildAdded:Connect(handleKB))
 end
 LocalPlayer.CharacterAdded:Connect(function(char) if antiRagdollEnabled then setupAntiKB(char) end end)
-
 AntiRagdollButton.MouseButton1Click:Connect(function()
     antiRagdollEnabled = not antiRagdollEnabled
+    AntiRagdollButton.Text = antiRagdollEnabled and "Anti-Ragdoll & KB: ON" or "Anti-Ragdoll & KB: OFF"
+    AntiRagdollButton.BackgroundColor3 = antiRagdollEnabled and FromRGB(67, 181, 129) or FromRGB(88, 101, 242)
     if antiRagdollEnabled then
-        AntiRagdollButton.Text = "Anti-Ragdoll & KB: ON"
-        AntiRagdollButton.BackgroundColor3 = FromRGB(67, 181, 129)
         ragdollConnection = RunService.Heartbeat:Connect(function()
-            local char = LocalPlayer.Character
-            if char then
-                local hum = char:FindFirstChildOfClass("Humanoid")
-                if hum and hum:GetState() == Enum.HumanoidStateType.Ragdoll then hum:ChangeState(Enum.HumanoidStateType.GettingUp) end
-            end
+            local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if hum and hum:GetState() == Enum.HumanoidStateType.Ragdoll then hum:ChangeState(Enum.HumanoidStateType.GettingUp) end
         end)
         if LocalPlayer.Character then setupAntiKB(LocalPlayer.Character) end
     else
-        AntiRagdollButton.Text = "Anti-Ragdoll & KB: OFF"
-        AntiRagdollButton.BackgroundColor3 = FromRGB(88, 101, 242)
         if ragdollConnection then ragdollConnection:Disconnect() end
-        for _, conn in ipairs(kbConnections) do conn:Disconnect() end
-        table.clear(kbConnections)
+        for _, c in ipairs(kbConnections) do c:Disconnect() end; table.clear(kbConnections)
     end
 end)
 
--- Inf Jump
-local infJumpEnabled = false
-local infJumpConnection = nil
+local infJumpEnabled, infJumpConnection = false, nil
 InfJumpButton.MouseButton1Click:Connect(function()
     infJumpEnabled = not infJumpEnabled
+    InfJumpButton.Text = infJumpEnabled and "Infinite Jump: ON" or "Infinite Jump: OFF"
+    InfJumpButton.BackgroundColor3 = infJumpEnabled and FromRGB(67, 181, 129) or FromRGB(88, 101, 242)
     if infJumpEnabled then
-        InfJumpButton.Text = "Infinite Jump: ON"
-        InfJumpButton.BackgroundColor3 = FromRGB(67, 181, 129)
         infJumpConnection = UserInputService.JumpRequest:Connect(function()
-            local char = LocalPlayer.Character
-            if char then
-                local hum = char:FindFirstChildOfClass("Humanoid")
-                if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
-            end
+            local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
         end)
-    else
-        InfJumpButton.Text = "Infinite Jump: OFF"
-        InfJumpButton.BackgroundColor3 = FromRGB(88, 101, 242)
-        if infJumpConnection then infJumpConnection:Disconnect() end
-    end
+    else if infJumpConnection then infJumpConnection:Disconnect() end end
 end)
 
--- Walkspeed
 local wsConnection = nil
 WalkspeedToggle.MouseButton1Click:Connect(function()
     walkspeedEnabled = not walkspeedEnabled
+    WalkspeedToggle.Text = walkspeedEnabled and "Walkspeed: ON" or "Walkspeed: OFF"
+    WalkspeedToggle.BackgroundColor3 = walkspeedEnabled and FromRGB(67, 181, 129) or FromRGB(88, 101, 242)
     if walkspeedEnabled then
-        WalkspeedToggle.Text = "Walkspeed: ON"
-        WalkspeedToggle.BackgroundColor3 = FromRGB(67, 181, 129)
         wsConnection = RunService.Heartbeat:Connect(function()
-            local char = LocalPlayer.Character
-            if char then
-                local hum = char:FindFirstChildOfClass("Humanoid")
-                if hum and hum.WalkSpeed ~= 0 and not isTeleporting then hum.WalkSpeed = currentSpeed end
-            end
+            local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if hum and hum.WalkSpeed ~= 0 and not isTeleporting then hum.WalkSpeed = currentSpeed end
         end)
     else
-        WalkspeedToggle.Text = "Walkspeed: OFF"
-        WalkspeedToggle.BackgroundColor3 = FromRGB(88, 101, 242)
         if wsConnection then wsConnection:Disconnect() end
-        local char = LocalPlayer.Character
-        if char then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum then hum.WalkSpeed = 16 end
-        end
+        local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if hum then hum.WalkSpeed = 16 end
     end
 end)
 
 local dragging = false
-local function UpdateSlider()
-    local relX = Mouse.X - WalkspeedSliderBG.AbsolutePosition.X
-    local percent = math.clamp(relX / WalkspeedSliderBG.AbsoluteSize.X, 0, 1)
-    WalkspeedSliderFill.Size = UDim2.new(percent, 0, 1, 0)
-    currentSpeed = math.floor(16 + (percent * 184))
-    WalkspeedValueLabel.Text = "Speed: " .. currentSpeed
-    if walkspeedEnabled then
-        local char = LocalPlayer.Character
-        local hum = char and char:FindFirstChildOfClass("Humanoid")
+WalkspeedSliderBG.MouseButton1Down:Connect(function() dragging = true end)
+Mouse.Move:Connect(function()
+    if dragging then
+        local pct = math.clamp((Mouse.X - WalkspeedSliderBG.AbsolutePosition.X) / WalkspeedSliderBG.AbsoluteSize.X, 0, 1)
+        WalkspeedSliderFill.Size = UDim2.new(pct, 0, 1, 0)
+        currentSpeed = math.floor(16 + (pct * 184))
+        WalkspeedValueLabel.Text = "Speed: " .. currentSpeed
+        local hum = walkspeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
         if hum and not isTeleporting then hum.WalkSpeed = currentSpeed end
     end
-end
-
-WalkspeedSliderBG.MouseButton1Down:Connect(function() dragging = true; UpdateSlider() end)
-Mouse.Move:Connect(function() if dragging then UpdateSlider() end end)
-UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
+end)
+UserInputService.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
